@@ -12,8 +12,8 @@ config :logger, level: :warn
 # Configure your database
 config :exerself, Exerself.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: "exerself",
+  password: "exerself",
   database: "exerself_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

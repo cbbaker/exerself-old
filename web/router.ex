@@ -30,7 +30,9 @@ defmodule Exerself.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", Exerself do
-  #   pipe_through :api
-  # end
+  scope "/api", Exerself do
+    pipe_through :api
+    
+    resources "/stationary_bike_rides", StationaryBikeRideController, except: [:new, :edit, :show]
+  end
 end
