@@ -1,7 +1,7 @@
 defmodule Exerself.StationaryBikeRideView do
   use Exerself.Web, :view
 
-  def render("index.json", %{user_id: user_id, stationary_bike_rides: stationary_bike_rides}) do
+  def render("index.json", %{stationary_bike_rides: stationary_bike_rides, current_user: %{id: user_id}}) do
     # %{data: render_many(stationary_bike_rides, Exerself.StationaryBikeRideView, "stationary_bike_ride.json")}
     defaults = case stationary_bike_rides do
                  [last_ride | _] -> last_ride
@@ -37,7 +37,7 @@ defmodule Exerself.StationaryBikeRideView do
 
   def render("stationary_bike_ride.json", %{stationary_bike_ride: stationary_bike_ride}) do
     %{id: stationary_bike_ride.id,
-      user: stationary_bike_ride.user,
+      user_id: stationary_bike_ride.user_id,
       started_at: stationary_bike_ride.started_at,
       duration: stationary_bike_ride.duration,
       power: stationary_bike_ride.power,
