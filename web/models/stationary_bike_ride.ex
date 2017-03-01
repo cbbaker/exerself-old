@@ -18,6 +18,6 @@ defmodule Exerself.StationaryBikeRide do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:started_at, :duration, :power, :heart_rate, :notes])
-    |> validate_required([:started_at, :duration, :power, :heart_rate, :notes])
+    |> validate_required([:started_at, :duration, :power, :heart_rate])
   end
 end

@@ -3,10 +3,6 @@ defmodule Exerself.StationaryBikeRideView do
 
   def render("index.json", %{stationary_bike_rides: stationary_bike_rides, current_user: %{id: user_id}}) do
     # %{data: render_many(stationary_bike_rides, Exerself.StationaryBikeRideView, "stationary_bike_ride.json")}
-    defaults = case stationary_bike_rides do
-                 [last_ride | _] -> last_ride
-                 _ -> %{user_id: user_id}
-               end
 
     container(%{}, %{
       panel: panel(%{}, %{
@@ -17,10 +13,10 @@ defmodule Exerself.StationaryBikeRideView do
           classes: ["panel-title"]
         },
         body: container(%{}, %{
-          flash: row(%{}, flash()),
+          flash: row(%{}, %{flash: flash()}),
           newButton: row(%{}, %{
             pullRight: pull_right(%{}, %{
-              createButton: new_ride_button(defaults)
+              createButton: new_ride_button(user_id, stationary_bike_rides)
             })
           }),
           list: row(%{}, %{
@@ -43,6 +39,20 @@ defmodule Exerself.StationaryBikeRideView do
       power: stationary_bike_ride.power,
       heart_rate: stationary_bike_ride.heart_rate,
       notes: stationary_bike_ride.notes}
+  end
+
+  def defaults(_user_id, [last | _]) do
+    last
+  end
+
+  def defaults(user_id, _) do
+    %{user_id: user_id,
+      started_at: DateTime.utc_now,
+      duration: 0,
+      power: 0,
+      heart_rate: 0,
+      notes: ""
+    }
   end
 
   def layout(type, subscriptions, children) do
@@ -82,7 +92,8 @@ defmodule Exerself.StationaryBikeRideView do
 
   def flash(), do: %{type: "Flash"}
 
-  def new_ride_button(last_ride) do
+  def new_ride_button(user_id, rides) do
+    data = defaults(user_id, rides)
     %{type: "NewRideButton",
       text: "Create new",
       enabled: true,
@@ -95,7 +106,7 @@ defmodule Exerself.StationaryBikeRideView do
             },
             %{channel: "insertRide",
               payload: %{
-                newItem: new_ride(last_ride)
+                newItem: new_ride(data)
               }
             }
           ]

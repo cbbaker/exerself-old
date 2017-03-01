@@ -17,7 +17,7 @@ defmodule Exerself.StationaryBikeRideController do
     render(conn, "index.json", stationary_bike_rides: stationary_bike_rides)
   end
 
-  def create(conn, %{"stationary_bike_ride" => stationary_bike_ride_params}, %{id: user_id}) do
+  def create(conn, stationary_bike_ride_params, %{id: user_id}) do
     changeset =
       %StationaryBikeRide{user_id: user_id}
       |> StationaryBikeRide.changeset(stationary_bike_ride_params)
@@ -35,7 +35,7 @@ defmodule Exerself.StationaryBikeRideController do
     end
   end
 
-  def update(conn, %{"id" => id, "stationary_bike_ride" => stationary_bike_ride_params}, %{id: user_id}) do
+  def update(conn, %{"id" => id } = stationary_bike_ride_params, %{id: user_id}) do
     stationary_bike_ride = Repo.get_by!(StationaryBikeRide, %{id: id, user_id: user_id})
     changeset = StationaryBikeRide.changeset(stationary_bike_ride, stationary_bike_ride_params)
 
