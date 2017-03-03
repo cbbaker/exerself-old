@@ -115,17 +115,17 @@ defmodule Exerself.StationaryBikeRideView do
     }
   end
 
-  def new_ride(defaults) do
+  def new_ride(ride) do
     choice "newItem", %{
-      show: ride_show(defaults, "newItem"),
-      edit: ride_edit(defaults, "newItem")
+      show: ride_show(ride, "newItem"),
+      edit: ride_edit(ride, "newItem")
     }, "edit"
   end
 
-  def ride_show(defaults, prefix) do
+  def ride_show(ride, prefix) do
     %{type: "RideShow",
       subscription: prefix <> "Edit",
-      data: defaults,
+      data: render_one(ride, Exerself.StationaryBikeRideView, "stationary_bike_ride.json"),
       actions: %{
         edit: %{
           links: [],
@@ -138,10 +138,10 @@ defmodule Exerself.StationaryBikeRideView do
     }
   end
 
-  def ride_edit(defaults, prefix) do
+  def ride_edit(ride, prefix) do
     %{type: "RideEdit",
       subscription: prefix <> "Show",
-      data: defaults,
+      data: render_one(ride, Exerself.StationaryBikeRideView, "stationary_bike_ride.json"),
       actions: %{
         cancel: %{
           links: [],
