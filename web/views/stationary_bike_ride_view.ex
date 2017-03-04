@@ -2,8 +2,6 @@ defmodule Exerself.StationaryBikeRideView do
   use Exerself.Web, :view
 
   def render("index.json", %{stationary_bike_rides: stationary_bike_rides, current_user: %{id: user_id}}) do
-    # %{data: render_many(stationary_bike_rides, Exerself.StationaryBikeRideView, "stationary_bike_ride.json")}
-
     container(%{}, %{
       panel: panel(%{}, %{
         heading: %{
@@ -68,9 +66,9 @@ defmodule Exerself.StationaryBikeRideView do
   def list_group(subscriptions, children), do: layout("ListGroup", subscriptions, children)
   def pull_right(subscriptions, children), do: layout("PullRight", subscriptions, children)
 
-  def choice(subscriptions, children, initial) do
+  def choice(subscription, children, initial) do
     %{type: "Choice",
-      subscriptions: subscriptions,
+      subscription: subscription,
       children: children,
       initial: initial
     }
@@ -118,7 +116,7 @@ defmodule Exerself.StationaryBikeRideView do
   def new_ride(ride) do
     choice "newItem", %{
       show: ride_show(ride, "newItem"),
-      edit: ride_edit(ride, "newItem")
+      edit: new_ride_edit(ride, "newItem")
     }, "edit"
   end
 
@@ -138,7 +136,7 @@ defmodule Exerself.StationaryBikeRideView do
     }
   end
 
-  def ride_edit(ride, prefix) do
+  def new_ride_edit(ride, prefix) do
     %{type: "RideEdit",
       subscription: prefix <> "Show",
       data: render_one(ride, Exerself.StationaryBikeRideView, "stationary_bike_ride.json"),
@@ -159,6 +157,44 @@ defmodule Exerself.StationaryBikeRideView do
           publishes: [
             %{channel: prefix <> "Edit"},
             %{channel: prefix, payload: "show"}
+          ]
+        }
+      }
+    }
+  end
+
+  def ride_edit(ride, prefix) do
+    %{type: "RideEdit",
+      subscription: prefix <> "Show",
+      data: render_one(ride, Exerself.StationaryBikeRideView, "stationary_bike_ride.json"),
+      actions: %{
+        cancel: %{
+          links: [],
+          publishes: [
+            %{channel: prefix, payload: "show"}
+          ]
+        },
+        update: %{
+          links: [
+            %{url: stationary_bike_ride_path(Exerself.Endpoint, :update, ride),
+              method: "PUT",
+              success: prefix <> "Update"
+             }
+          ],
+          publishes: [
+            %{channel: prefix <> "Edit"},
+            %{channel: prefix, payload: "show"}
+          ]
+        },
+        delete: %{
+          links: [
+            %{url: stationary_bike_ride_path(Exerself.Endpoint, :delete, ride),
+              method: "DELETE",
+              success: prefix <> "Delete"
+             }
+          ],
+          publishes: [
+            %{channel: "deleteRide", payload: [prefix]}
           ]
         }
       }
